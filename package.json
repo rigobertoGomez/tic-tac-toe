@@ -3,13 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "node-sass": "^4.11.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "react-scripts": "2.1.5"
   },
-  "scripts": {
+  "scripts": {            
+    "prestart": "tailwind build ./src/tailwind.css -c ./tailwind.js -o ./src/index.css",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "prebuild": "tailwind build ./src/tailwind.css -c ./tailwind.js -o ./src/index.css",
+    "build": "react-scripts build",    
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -21,5 +24,10 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "autoprefixer": "^9.4.7",
+    "postcss-cli": "^6.1.1",
+    "tailwindcss": "^0.7.4"
+  }
 }
