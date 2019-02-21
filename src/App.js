@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Board from './components/Board'
+import Status from './components/Status'
 import { IconLogo } from './components/Icon';
 import './App.scss';
 
@@ -8,7 +9,8 @@ class App extends Component {
     sizeBoard: 3,
     squares: [],
     squareDimension: 0,
-    xIsNext: true,
+    xIsCurrent: true,
+    isFinished: false
   }
   componentDidMount() {
     this.generateBoard();
@@ -20,7 +22,8 @@ class App extends Component {
     }
     this.setState({
       squares: board,
-      xIsNext: true,
+      xIsCurrent: true,
+      isFinished: false,
       squareDimension: (100 / this.state.sizeBoard) + '%'
     })
   }
@@ -31,12 +34,67 @@ class App extends Component {
     if (isComplete) {
       return console.log("completo");
     } else {
-      squares[row][cell] = this.state.xIsNext ? 'X' : '0';
+      squares[row][cell] = this.state.xIsCurrent ? 'X' : '0';
       this.setState({
         squares,
-        xIsNext: !this.state.xIsNext
+
       })
+      const isWinner = this.validateWinner();
+      console.log(isWinner)
+      if (isWinner) {
+        this.setState({
+          isFinished: true
+        })
+      } else {
+        this.setState({
+          xIsCurrent: !this.state.xIsCurrent
+        })
+      }
     }
+  }
+  validateWinner = () => {
+    if (this.checkRows()) {
+      return true;
+    }
+    if (this.checkCols()) {
+      return true;
+    }
+  }
+  checkRows = () => {
+    let currentPlayer = this.state.xIsCurrent ? 'X' : '0'
+    for (var row = 0; row < this.state.squares.length; row++) {
+      var count = 0;
+      for (var col = 0; col < this.state.squares.length; col++) {
+        console.log(`squares[${row}][${col}]`);
+        this.state.squares[row][col] === currentPlayer ? count++ : count = 0;
+        if (count === this.state.sizeBoard) {
+          console.log("checkRow true on row: " + row);
+          return true;
+        }
+      }
+    }
+  }
+
+  checkCols = () => {
+    let currentPlayer = this.state.xIsCurrent ? 'X' : '0'
+    for (var col = 0; col < this.state.squares.length; col++) {
+      var count = 0;
+      for (var row = 0; row < this.state.squares.length; row++) {
+        console.log(`squares[${row}][${col}]`);
+        this.state.squares[row][col] === currentPlayer ? count++ : count = 0;
+        if (count === this.state.sizeBoard) {
+          console.log("checkCol true on col " + col);
+          return true;
+        }
+      }
+    }
+  }
+
+  endGame = () => {
+    this.setState({
+      isFinished: true,
+    })
+    alert(`the winner player is: ${this.state.xIsCurrent ? 'X' : '0'}`);
   }
   render() {
     return (
@@ -45,11 +103,10 @@ class App extends Component {
           <IconLogo width="40" height="40" />
           <h1 className="font-light text-black text-normal mx-4">Tic Tac Toe</h1>
         </div>
-        <div className={`status-player text-center max-w-xs mx-auto mb-10 rounded transition ${this.state.xIsNext ? 'bg-green' : 'bg-red'}`}>
-          <h1 className="text-xl p-4 font-light text-white">player turn: <span className=" font-bold">{this.state.xIsNext ? 'X' : '0'} </span></h1>
-        </div>
+
+        <Status isFinished={this.state.isFinished} xIsCurrent={this.state.xIsCurrent} />
         <div className="container mx-auto ">
-          <Board board={this.state.squares} squareDimension={this.state.squareDimension} onClick={this.handleClick} />
+          <Board board={this.state.squares} squareDimension={this.state.squareDimension} onClick={this.handleClick} isFinished={this.state.isFinished} xIsCurrent={this.state.xIsCurrent} />
           <div className="text-right max-w-md mx-auto">
             <button className="rounded-full bg-yellow mt-2 text-black font-bold w-16 h-16 active:outline-none text-md shadow-lg hover:bg-yellow-dark"
               onClick={this.generateBoard}

@@ -2,9 +2,22 @@ import React, { Component } from 'react';
 import Square from './Square'
 
 class Board extends Component {
-  render() {    
+  render() {
+    if (this.props.isFinished) {
+      return (
+        <div
+          className={`board-container transition mx-auto flex items-center justify-center shadow 
+          ${this.props.xIsCurrent ? 'bg-green' : 'bg-red'} p-2`} style={{ height: '500px', width: '500px' }}
+        >
+          <div className="text-center">
+            <p className="text-xl text-white mb-4">Winner is:</p>
+            <h1 className="text-10xl text-white">{this.props.xIsCurrent ? 'X' : '0'}</h1>
+          </div>
+        </div>
+      )
+    }
     return (
-      <div className="board-container  mx-auto flex flex-wrap shadow bg-white p-2" style={{height: '500px', width:'500px'}}>
+      <div className="board-container  mx-auto flex flex-wrap shadow bg-white p-2" style={{ height: '500px', width: '500px' }}>
         {this.props.board.map((square, indexSquare) => {
           return (
             square.map((item, i) => {
@@ -15,6 +28,7 @@ class Board extends Component {
                   dimension={this.props.squareDimension}
                   cell={i}
                   value={item}
+                  isFinished={this.props.isFinished}
                   onClick={this.props.onClick}
                 />
               )

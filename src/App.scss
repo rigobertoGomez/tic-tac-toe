@@ -1,3 +1,9 @@
+button{
+  &:active,
+  &:focus{
+    outline: none;
+  }
+}
 .transition{
-  transition: .4s all ease-in;
+  transition: .3s all ease-in;
 }
