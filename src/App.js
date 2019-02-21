@@ -55,6 +55,7 @@ class App extends Component {
       }
     }
   }
+  
   validateWinner = () => {
     if (this.checkRows()) {
       return true;
@@ -93,7 +94,7 @@ class App extends Component {
       for (var row = 0; row < this.state.squares.length; row++) {
         this.state.squares[row][col] === currentPlayer ? count++ : count = 0;
         if (count === this.state.sizeBoard) {
-          console.log("win on col " + col);
+          console.log("win on column " + col);
           return true;
         }
       }
@@ -134,9 +135,13 @@ class App extends Component {
     })
   }
   onChangeForm = (e) => {
+    let size = parseInt(e.target.value)        
+    if(e.target.value === ""){     
+      size = ""
+    }
     this.setState({
-      [e.target.name]: parseInt(e.target.value)
-    })
+      [e.target.name]: size
+    })      
   }
 
   render() {
