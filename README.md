@@ -4,10 +4,10 @@
 
 ``` bash
 # install dependencies
-$ yarn install
-$ yarn start
+$ npm install
+$ npm run  start
 
 # build for production
-$ yarn run build
+$ npm run build
 
 ```

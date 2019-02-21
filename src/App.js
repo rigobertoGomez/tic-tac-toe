@@ -15,11 +15,8 @@ class App extends Component {
     isFinished: false,
     isADraw: false,
     stepCounter: 0
+  }
 
-  }
-  componentDidMount() {
-    // this.generateBoard();
-  }
   generateBoard = () => {
     let board = new Array(this.state.sizeBoard);
     for (var i = 0; i < board.length; i++) {
@@ -39,13 +36,13 @@ class App extends Component {
     let { squares } = this.state
     const isComplete = squares[row][cell] !== "" ? true : false;
     if (isComplete) {
-      return ;
+      return;
     } else {
       squares[row][cell] = this.state.xIsCurrent ? 'X' : '0';
       this.setState({
         squares,
       })
-      const isWinner = this.validateWinner();      
+      const isWinner = this.validateWinner();
       if (isWinner) {
         this.setState({
           isFinished: true
@@ -53,7 +50,7 @@ class App extends Component {
       } else {
         this.setState({
           xIsCurrent: !this.state.xIsCurrent,
-          stepCounter: this.state.stepCounter+1
+          stepCounter: this.state.stepCounter + 1
         })
       }
     }
@@ -65,14 +62,14 @@ class App extends Component {
     if (this.checkCols()) {
       return true;
     }
-    if(this.checkDiagonalLeft()){
+    if (this.checkDiagonalLeft()) {
       return true;
     }
-    if(this.checkDiagonalRight()){
+    if (this.checkDiagonalRight()) {
       return true;
     }
-    if(this.state.stepCounter === (this.state.sizeBoard * this.state.sizeBoard) - 1){
-      this.setState({ isADraw: true })     
+    if (this.state.stepCounter === (this.state.sizeBoard * this.state.sizeBoard) - 1) {
+      this.setState({ isADraw: true })
       return true;
     }
   }
@@ -80,61 +77,52 @@ class App extends Component {
     let currentPlayer = this.state.xIsCurrent ? 'X' : '0'
     for (var row = 0; row < this.state.squares.length; row++) {
       var count = 0;
-      for (var col = 0; col < this.state.squares.length; col++) {      
+      for (var col = 0; col < this.state.squares.length; col++) {
         this.state.squares[row][col] === currentPlayer ? count++ : count = 0;
         if (count === this.state.sizeBoard) {
-          console.log("checkRow true on row: " + row);
+          console.log("win on row: " + row);
           return true;
         }
       }
     }
   }
-
   checkCols = () => {
     let currentPlayer = this.state.xIsCurrent ? 'X' : '0'
     for (var col = 0; col < this.state.squares.length; col++) {
       var count = 0;
-      for (var row = 0; row < this.state.squares.length; row++) {        
+      for (var row = 0; row < this.state.squares.length; row++) {
         this.state.squares[row][col] === currentPlayer ? count++ : count = 0;
         if (count === this.state.sizeBoard) {
-          console.log("checkCol true on col " + col);
+          console.log("win on col " + col);
           return true;
         }
       }
     }
   }
-  checkDiagonalLeft = () =>{
+  checkDiagonalLeft = () => {
     let count = 0;
-    const length = this.state.squares.length;        
-    let currentPlayer = this.state.xIsCurrent ? 'X' : '0'    
-    for (var rowStart = 0; rowStart < length; rowStart++) {
-      for (var row = rowStart, col = 0; row < length && col < length; row++, col++) {
-        // console.log(this.state.squares[row][col])        
-        this.state.squares[row][col] === currentPlayer ? count++ : count = 0;     
-        console.log(`${currentPlayer} : ${count}`)
-        if (count === this.state.sizeBoard) {
-          console.log("Win diagonal TL to BR");        
-          return true;
-        }
+    const length = this.state.squares.length;
+    let currentPlayer = this.state.xIsCurrent ? 'X' : '0'
+    for (var row = 0, col = 0; row < length && col < length; row++ , col++) {
+      this.state.squares[row][col] === currentPlayer ? count++ : count = 0;
+      if (count === this.state.sizeBoard) {
+        console.log("win diagonal left - right");
+        return true;
       }
-    }    
+    }
   }
-  checkDiagonalRight = () =>{
+  checkDiagonalRight = () => {
     let count = 0;
-    const length = this.state.squares.length;        
-    let currentPlayer = this.state.xIsCurrent ? 'X' : '0'    
-    for (var rowStart = 0; rowStart < length; rowStart++) {
-      for (var row = rowStart, col = (length - 1); row < length && col >= 0; row++, col--) {
-        // console.log(`squares[${row}][${col}]`);
-        this.state.squares[row][col] === currentPlayer ? count++ : count = 0;     
-        if (count === this.state.sizeBoard) {
-          console.log("Win diagonal TR to BL");        
-          return true;
-        }
+    const length = this.state.squares.length;
+    let currentPlayer = this.state.xIsCurrent ? 'X' : '0'
+    for (var row = 0, col = (length - 1); row < length && col >= 0; row++ , col--) {
+      this.state.squares[row][col] === currentPlayer ? count++ : count = 0;
+      if (count === this.state.sizeBoard) {
+        console.log("win diagonal right - left");
+        return true;
       }
-    }    
+    }
   }
-
 
   startGame = (e) => {
     e.preventDefault()
@@ -143,7 +131,7 @@ class App extends Component {
   endGame = () => {
     this.setState({
       isFinished: true,
-    })    
+    })
   }
   onChangeForm = (e) => {
     this.setState({
@@ -157,15 +145,15 @@ class App extends Component {
         <div className="header py-4 px-8 w-1/3 py-12 bg-yellow">
           <div className="flex items-center mb-16 ">
             <IconLogo width="40" height="40" />
-            <h1 className="font-light text-black text-normal mx-4">Tic Tac Toe</h1>            
+            <h1 className="font-light text-black text-normal mx-4">Tic Tac Toe</h1>
           </div>
-          <SelectBoard sizeBoard={this.state.sizeBoard} onChangeForm={this.onChangeForm} startGame={this.startGame}/>          
+          <SelectBoard sizeBoard={this.state.sizeBoard} onChangeForm={this.onChangeForm} startGame={this.startGame} />
         </div>
         <div className="w-full text-center flex flex-col justify-center">
           {
             this.state.squares.length > 0 &&
             <div>
-              <Status isFinished={this.state.isFinished}  xIsCurrent={this.state.xIsCurrent} />
+              <Status isFinished={this.state.isFinished} xIsCurrent={this.state.xIsCurrent} />
               <div className="container mx-auto ">
                 <Board board={this.state.squares} isADraw={this.state.isADraw} squareDimension={this.state.squareDimension} onClick={this.handleClick} isFinished={this.state.isFinished} xIsCurrent={this.state.xIsCurrent} />
                 <div className="text-right max-w-md mx-auto">
