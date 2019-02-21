@@ -13,6 +13,8 @@ class App extends Component {
     squareDimension: 0,
     xIsCurrent: true,
     isFinished: false,
+    isADraw: false,
+    stepCounter: 0
 
   }
   componentDidMount() {
@@ -27,7 +29,9 @@ class App extends Component {
       squares: board,
       xIsCurrent: true,
       isFinished: false,
-      squareDimension: (100 / this.state.sizeBoard) + '%'
+      squareDimension: (100 / this.state.sizeBoard) + '%',
+      stepCounter: 0,
+      isADraw: false
     })
   }
   handleClick = (e, row, cell) => {
@@ -48,7 +52,8 @@ class App extends Component {
         })
       } else {
         this.setState({
-          xIsCurrent: !this.state.xIsCurrent
+          xIsCurrent: !this.state.xIsCurrent,
+          stepCounter: this.state.stepCounter+1
         })
       }
     }
@@ -60,13 +65,22 @@ class App extends Component {
     if (this.checkCols()) {
       return true;
     }
+    if(this.checkDiagonalLeft()){
+      return true;
+    }
+    if(this.checkDiagonalRight()){
+      return true;
+    }
+    if(this.state.stepCounter === (this.state.sizeBoard * this.state.sizeBoard) - 1){
+      this.setState({ isADraw: true })     
+      return true;
+    }
   }
   checkRows = () => {
     let currentPlayer = this.state.xIsCurrent ? 'X' : '0'
     for (var row = 0; row < this.state.squares.length; row++) {
       var count = 0;
-      for (var col = 0; col < this.state.squares.length; col++) {
-        console.log(`squares[${row}][${col}]`);
+      for (var col = 0; col < this.state.squares.length; col++) {      
         this.state.squares[row][col] === currentPlayer ? count++ : count = 0;
         if (count === this.state.sizeBoard) {
           console.log("checkRow true on row: " + row);
@@ -80,8 +94,7 @@ class App extends Component {
     let currentPlayer = this.state.xIsCurrent ? 'X' : '0'
     for (var col = 0; col < this.state.squares.length; col++) {
       var count = 0;
-      for (var row = 0; row < this.state.squares.length; row++) {
-        console.log(`squares[${row}][${col}]`);
+      for (var row = 0; row < this.state.squares.length; row++) {        
         this.state.squares[row][col] === currentPlayer ? count++ : count = 0;
         if (count === this.state.sizeBoard) {
           console.log("checkCol true on col " + col);
@@ -90,6 +103,38 @@ class App extends Component {
       }
     }
   }
+  checkDiagonalLeft = () =>{
+    let count = 0;
+    const length = this.state.squares.length;        
+    let currentPlayer = this.state.xIsCurrent ? 'X' : '0'    
+    for (var rowStart = 0; rowStart < length; rowStart++) {
+      for (var row = rowStart, col = 0; row < length && col < length; row++, col++) {
+        // console.log(this.state.squares[row][col])        
+        this.state.squares[row][col] === currentPlayer ? count++ : count = 0;     
+        console.log(`${currentPlayer} : ${count}`)
+        if (count === this.state.sizeBoard) {
+          console.log("Win diagonal TL to BR");        
+          return true;
+        }
+      }
+    }    
+  }
+  checkDiagonalRight = () =>{
+    let count = 0;
+    const length = this.state.squares.length;        
+    let currentPlayer = this.state.xIsCurrent ? 'X' : '0'    
+    for (var rowStart = 0; rowStart < length; rowStart++) {
+      for (var row = rowStart, col = (length - 1); row < length && col >= 0; row++, col--) {
+        // console.log(`squares[${row}][${col}]`);
+        this.state.squares[row][col] === currentPlayer ? count++ : count = 0;     
+        if (count === this.state.sizeBoard) {
+          console.log("Win diagonal TR to BL");        
+          return true;
+        }
+      }
+    }    
+  }
+
 
   startGame = (e) => {
     e.preventDefault()
@@ -120,9 +165,9 @@ class App extends Component {
           {
             this.state.squares.length > 0 &&
             <div>
-              <Status isFinished={this.state.isFinished} xIsCurrent={this.state.xIsCurrent} />
+              <Status isFinished={this.state.isFinished}  xIsCurrent={this.state.xIsCurrent} />
               <div className="container mx-auto ">
-                <Board board={this.state.squares} squareDimension={this.state.squareDimension} onClick={this.handleClick} isFinished={this.state.isFinished} xIsCurrent={this.state.xIsCurrent} />
+                <Board board={this.state.squares} isADraw={this.state.isADraw} squareDimension={this.state.squareDimension} onClick={this.handleClick} isFinished={this.state.isFinished} xIsCurrent={this.state.xIsCurrent} />
                 <div className="text-right max-w-md mx-auto">
                   <button className="rounded-full bg-yellow mt-2 text-black font-bold w-16 h-16 active:outline-none text-md shadow-lg hover:bg-yellow-dark"
                     onClick={this.generateBoard}

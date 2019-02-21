@@ -3,15 +3,22 @@ import Square from './Square'
 
 class Board extends Component {
   render() {
-    if (this.props.isFinished) {
+    if (this.props.isFinished || this.props.isADraw) {
       return (
         <div
           className={`board-container transition mx-auto flex items-center justify-center shadow 
           ${this.props.xIsCurrent ? 'bg-green' : 'bg-red'} p-2`} style={{ height: '500px', width: '500px' }}
         >
           <div className="text-center">
-            <p className="text-xl text-white mb-4">Winner is:</p>
-            <h1 className="text-10xl text-white">{this.props.xIsCurrent ? 'X' : '0'}</h1>
+            {
+              this.props.isADraw ?
+                <h1 className="text-5xl text-white">Is a Draw :(</h1>
+                :
+                <div>
+                  <p className="text-xl text-white mb-4">Winner is:</p>
+                  <h1 className="text-10xl text-white">{this.props.xIsCurrent ? 'X' : '0'}</h1>
+                </div>
+            }
           </div>
         </div>
       )
